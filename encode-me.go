@@ -375,7 +375,29 @@ func urlencodeall(payload string) string {
 		sl := []byte("")
 		sl = append(sl, tmp2)
 		encHex := hex.EncodeToString(sl)
-		slice = append(slice, percent[0], encHex[0], encHex[1])
+		slice = append(slice, percent[0])
+		for j := 0; j < len(encHex); j++ {
+			slice = append(slice, encHex[j])
+		}
+	}
+	return string(slice)
+}
+
+func htmlencodeall(payload string) string {
+	aux := payload
+	tmp := "&#x;"
+	slice := []byte("")
+	for i := 0; i < len(aux); i++ {
+		dst := int(aux[i])
+		tmp2 := byte(dst)
+		sl := []byte("")
+		sl = append(sl, tmp2)
+		encHex := hex.EncodeToString(sl)
+		slice = append(slice, tmp[0], tmp[1], tmp[2])
+		for j := 0; j < len(encHex); j++ {
+			slice = append(slice, encHex[j])
+		}
+		slice = append(slice, tmp[3])
 	}
 	return string(slice)
 }
@@ -418,6 +440,7 @@ func main() {
 	fns = append(fns, uppercase)
 	fns = append(fns, urlencode)
 	fns = append(fns, urlencodeall)
+	fns = append(fns, htmlencodeall)
 
 	//Generate payload encoded
 	for i := 0; i < 3; i++ {
