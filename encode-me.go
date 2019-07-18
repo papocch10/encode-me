@@ -143,21 +143,15 @@ func obfuscatebyordinal(payload string) string { //Da fareeeeeeeeeeee
 	percent := []byte("%")
 	for i := 0; i < len(aux); i++ {
 		if string(aux[i]) == "%" || string(aux[i]) == "&" || string(aux[i]) == "<" || string(aux[i]) == ">" || string(aux[i]) == "/" || string(aux[i]) == "\\" || string(aux[i]) == ";" || string(aux[i]) == "'" || string(aux[i]) == "\"" {
-			/*fmt.Print("Conv: ")
-			a := int(aux[i])
-			fmt.Println(a)
-			fmt.Print("divisione: ")
-			a = a * 10 / 7
-			fmt.Println(a)
-			fmt.Print("stringa: ")
-			fmt.Println(string(a))*/
-			//slice = append(slice, string(uint8(aux[i])*10/7))
 			dst := (int(aux[i]) * 10) / 7
 			tmp2 := byte(dst)
 			sl := []byte("")
 			sl = append(sl, tmp2)
 			encHex := hex.EncodeToString(sl)
-			slice = append(slice, percent[0], encHex[0], encHex[1])
+			slice = append(slice, percent[0])
+			for j := 0; j < len(encHex); j++ {
+				slice = append(slice, encHex[j])
+			}
 
 		} else {
 			slice = append(slice, aux[i])
@@ -402,6 +396,31 @@ func htmlencodeall(payload string) string {
 	return string(slice)
 }
 
+func space2slash(payload string) string {
+	aux := payload
+	aux = strings.Replace(aux, " ", "/", -1)
+	return aux
+}
+
+func level1usingutf8(payload string) string {
+	aux := payload
+	r := strings.NewReplacer("<", "%C0%BC", ">", "%C0%BE", "'", "%C0%A7", "\"", "%C0%A2")
+	aux = r.Replace(aux)
+	return aux
+}
+func level2usingutf8(payload string) string {
+	aux := payload
+	r := strings.NewReplacer("<", "%E0%80%BC", ">", "%E0%80%BE", "'", "%E0%80%A7", "\"", "%E0%80%A2")
+	aux = r.Replace(aux)
+	return aux
+}
+func level3usingutf8(payload string) string {
+	aux := payload
+	r := strings.NewReplacer("<", "%F0%80%80%BC", ">", "%F0%80%80%BE", "'", "%F0%80%80%A7", "\"", "%F0%80%80%A2")
+	aux = r.Replace(aux)
+	return aux
+}
+
 func main() {
 	flag.Parse()
 	fmt.Println(payload)
@@ -416,7 +435,7 @@ func main() {
 	fns = append(fns, enclosebrackets)
 	fns = append(fns, escapequotes)
 	fns = append(fns, lowercase)
-	fns = append(fns, lowlevelunicodecharacter)
+	fns = append(fns, lowlevelunicodecharacter) //toggle
 	fns = append(fns, maskenclosebrackets)
 	fns = append(fns, modsec)
 	fns = append(fns, modsecspace2comment)
@@ -426,7 +445,7 @@ func main() {
 	fns = append(fns, randomcase)
 	fns = append(fns, randomcomments)
 	fns = append(fns, randomtabify)
-	fns = append(fns, randomunicode)
+	fns = append(fns, randomunicode)	//toggle
 	fns = append(fns, space2comment)
 	fns = append(fns, space2doubledashes)
 	fns = append(fns, space2hash)
@@ -441,6 +460,10 @@ func main() {
 	fns = append(fns, urlencode)
 	fns = append(fns, urlencodeall)
 	fns = append(fns, htmlencodeall)
+	fns = append(fns, space2slash)
+	fns = append(fns, level1usingutf8)
+	fns = append(fns, level2usingutf8)
+	fns = append(fns, level3usingutf8)
 
 	//Generate payload encoded
 	for i := 0; i < 3; i++ {
