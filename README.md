@@ -13,5 +13,6 @@ The list may contain duplicates. So let's delete them using awk
 ```
 awk '!seen[$0]++' list.txt > listFinal.txt
 ```
-# Credits
+# Authors
+Author: Fabio 'pap0cch10' Mariani - Twitter: papocchio0
 Based on an idea by Francesco Lacerenza - Twitter: @lacerenza_fra
